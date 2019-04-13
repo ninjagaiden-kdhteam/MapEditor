@@ -37,7 +37,7 @@ namespace MapEditor
             CellWidth = int.Parse(TextBoxCellWidth.Text);
             TileSetFilePath = TextBoxTileSetPath.Text;
             ImageFilePath = TextBoxImagePath.Text;
-            if (File.Exists(TileSetFilePath) && File.Exists(ImageFilePath))
+            if (File.Exists(ImageFilePath))
                 DialogResult = true;
             else
                 MessageBox.Show("Please enter a valid file path", "Invalid", MessageBoxButton.OK, MessageBoxImage.Error);

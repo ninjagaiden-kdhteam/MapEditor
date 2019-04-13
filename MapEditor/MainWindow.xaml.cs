@@ -152,9 +152,9 @@ namespace MapEditor
         {
             //Xóa sạch nội dung trong wrappanel
             WrapPanelTileSet.Children.Clear();
-            selectedImage = null;
+            
             ImagePreview.Source = null;
-            List<Image> tileSet = new List<Image>();
+            List<Image> m_tileSet = new List<Image>();
             //Load bitmap chứa tileset từ file
             Bitmap inputBitmap = new Bitmap(tileSetPath);
             int bitmapWidth = inputBitmap.Width;
@@ -177,7 +177,7 @@ namespace MapEditor
                     tmp = inputBitmap.Clone(r, inputBitmap.PixelFormat);
                     var image = new Image();
                     image.Source = BitmapToImageSource(tmp);
-                    tileSet.Add(image);
+                    m_tileSet.Add(image);
                     var button = new Button();
                     button.MouseEnter += TileSet_Button_MouseEnter;
                     button.MouseLeave += TileSet_Button_MouseLeave;
@@ -191,8 +191,10 @@ namespace MapEditor
                     button.Tag = count;
                 }
             }
-
-            return tileSet;
+            selectedImage = new Image();
+            selectedImage.Source = m_tileSet[0].Source;
+            selectedImageId = 0;
+            return m_tileSet;
         }
 
         private void TileSet_Button_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
