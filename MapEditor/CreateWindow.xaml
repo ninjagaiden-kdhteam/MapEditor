@@ -18,19 +18,19 @@
             </StackPanel>
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" fw:PointerTracker.Enabled="True">
                 <TextBlock Padding="10">Rows:</TextBlock>
-                <TextBox Name="TextBoxRows" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxRows" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="12"/>
                 <TextBlock Padding="10">Columns:</TextBlock>
-                <TextBox Name="TextBoxColumns" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxColumns" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="48"/>
                 
                 <DockPanel Height="40" LastChildFill="False">
                     <TextBlock Padding="10" DockPanel.Dock="Left" >TileSet file path:</TextBlock>
                     <Button Name="BrowseTileSetFile" Content="Browse..." Width="60" Height="20" DockPanel.Dock="Right" Margin="0,0,12,0" Style="{StaticResource ButtonRevealStyle}" Click="BrowseTileSetFile_Click"/>
                 </DockPanel>
-                <TextBox Name="TextBoxTileSetPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxTileSetPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" MaxLines="1"/>
                 <TextBlock Padding="10">Cell Width:</TextBlock>
-                <TextBox Name="TextBoxCellWidth" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxCellWidth" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="32"/>
                 <TextBlock Padding="10">Cell Height:</TextBlock>
-                <TextBox Name="TextBoxCellHeight" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxCellHeight" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="32"/>
             </StackPanel>
         </DockPanel>
 

@@ -21,16 +21,16 @@
                     <TextBlock Padding="10" DockPanel.Dock="Left" >Image file:</TextBlock>
                     <Button Name="BrowseImageFile" Content="Browse..." Width="60" Height="20" DockPanel.Dock="Right" Margin="0,0,12,0" Style="{StaticResource ButtonRevealStyle}" Click="BrowseImageFile_Click"/>
                 </DockPanel>
-                <TextBox Name="TextBoxImagePath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxImagePath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" MaxLines="1" MinLines="1"/>
                 <DockPanel Height="40" LastChildFill="False">
                     <TextBlock Padding="10" DockPanel.Dock="Left" >Save TileSet to:</TextBlock>
                     <Button Name="BrowseTileSetFile" Content="Browse..." Width="60" Height="20" DockPanel.Dock="Right" Margin="0,0,12,0" Style="{StaticResource ButtonRevealStyle}" Click="BrowseTileSetFile_Click"/>
                 </DockPanel>
-                <TextBox Name="TextBoxTileSetPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxTileSetPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" MaxLines="1"/>
                 <TextBlock Padding="10">Cell Width:</TextBlock>
-                <TextBox Name="TextBoxCellWidth" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxCellWidth" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="32"/>
                 <TextBlock Padding="10">Cell Height:</TextBlock>
-                <TextBox Name="TextBoxCellHeight" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxCellHeight" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="32"/>
             </StackPanel>
         </DockPanel>
 

@@ -13,7 +13,7 @@
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
         <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True">
             <StackPanel DockPanel.Dock="Bottom" Height="50" Orientation="Horizontal" FlowDirection="RightToLeft" fw:PointerTracker.Enabled="True" >
-                <Button Content="OK" Name="ButtonOk" Width="50"  Margin="20,10,10,10" Style="{StaticResource ButtonRevealStyle}" Click="ButtonOk_Click"/>
+                <Button Content="OK" Name="ButtonOk" Width="50"  Margin="20,10,10,10" Style="{StaticResource ButtonRevealStyle}" Click="ButtonOk_Click" RenderTransformOrigin="0.504,0.5"/>
                 <Button Content="Cancel" Name="ButtonCancel" Width="50"  Margin="0,10,10,10" Style="{StaticResource ButtonRevealStyle}" RenderTransformOrigin="0.504,0.5" Click="ButtonCancel_Click"/>
             </StackPanel>
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" fw:PointerTracker.Enabled="True">
@@ -21,16 +21,16 @@
                     <TextBlock Padding="10" DockPanel.Dock="Left" >TileMap file path:</TextBlock>
                     <Button Name="BrowseTileMapFile" Content="Browse..." Width="60" Height="20" DockPanel.Dock="Right" Margin="0,0,12,0" Style="{StaticResource ButtonRevealStyle}" Click="BrowseTileMapFile_Click"/>
                 </DockPanel>
-                <TextBox Name="TextBoxTileMapPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxTileMapPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" MaxLines="1"/>
                 <DockPanel Height="40" LastChildFill="False">
                     <TextBlock Padding="10" DockPanel.Dock="Left" >TileSet file path:</TextBlock>
                     <Button Name="BrowseTileSetFile" Content="Browse..." Width="60" Height="20" DockPanel.Dock="Right" Margin="0,0,12,0" Style="{StaticResource ButtonRevealStyle}" Click="BrowseTileSetFile_Click"/>
                 </DockPanel>
-                <TextBox Name="TextBoxTileSetPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxTileSetPath" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" MaxLines="1"/>
                 <TextBlock Padding="10">Cell Width:</TextBlock>
-                <TextBox Name="TextBoxCellWidth" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxCellWidth" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="32"/>
                 <TextBlock Padding="10">Cell Height:</TextBlock>
-                <TextBox Name="TextBoxCellHeight" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}"/>
+                <TextBox Name="TextBoxCellHeight" Height="30" Margin="10,0,10,0" Style="{StaticResource TextBoxRevealStyle}" PreviewTextInput="TextBox_PreviewTextInput" Text="32"/>
             </StackPanel>
         </DockPanel>
 

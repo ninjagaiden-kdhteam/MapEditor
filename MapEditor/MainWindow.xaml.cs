@@ -5,10 +5,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Image = System.Windows.Controls.Image;
 
@@ -17,6 +15,8 @@ namespace MapEditor
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
+    //Lưu lại tọa độ của Button trong ma trận bằng thuộc tính Button.Tag
     struct POSITION
     {
         public int x, y;
@@ -24,69 +24,70 @@ namespace MapEditor
     }
     public partial class MainWindow : Window
     {
-        OpenFileDialog openFileDialog;
-        Image selectedImage;
-        string openingFilePath = null;
-        int selectedImageId;
-        List<Image> tileSet;
-        int[,] tileMap;
+        Image selectedImage;//Tile được chọn để lát
+        string openingFilePath = null;//Chứa đường dẫn tệp đang mở
+        int selectedImageId;//Index của selectedImage trong tileSet
+        List<Image> tileSet;//Danh sách các tiles
+        int[,] tileMap;//Ma trận chứa index các tiles
         public MainWindow()
         {
             InitializeComponent();
         }
-
+        //Vẽ grid map
         private void MakeGridMap(int m, int n, int width, int height)
         {
-            #region Map
-            //Bitmap
-            //Grid
             ColumnDefinition[] columns = new ColumnDefinition[n];
             RowDefinition[] rows = new RowDefinition[m];
-            GridTileMap.ShowGridLines = false;
+            GridTileMap.ShowGridLines = false;//Không hiện đường kẻ
+            //Xóa sạch gridtilemap để tránh chồng lấp trong mỗi lần tạo
             GridTileMap.ColumnDefinitions.Clear();
             GridTileMap.RowDefinitions.Clear();
             GridTileMap.Children.Clear();
+            //Định nghĩa các cột
             for (int i = 0; i < columns.Length; i++)
             {
                 columns[i] = new ColumnDefinition();
                 columns[i].Width = new GridLength(width);
                 GridTileMap.ColumnDefinitions.Add(columns[i]);
             }
+            //Định nghĩa các dòng
             for (int i = 0; i < rows.Length; i++)
             {
                 rows[i] = new RowDefinition();
                 rows[i].Height = new GridLength(height);
                 GridTileMap.RowDefinitions.Add(rows[i]);
             }
+            //Thêm các button để hiển thị tile lên grid
             for (int i = 0; i < m; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
                     var image = new Image();
-                    var value = tileMap[i, j];
-                    if (value != -1)
-                        image.Source = tileSet[value].Source;
+                    var value = tileMap[i, j];//lấy index từ tilemap
+                    if (value != -1) 
+                        image.Source = tileSet[value].Source; //Gán ảnh = ảnh có index tương ứng trong tileSet
                     else
-                        image.Source = null;
+                        image.Source = null; //Nếu bằng -1 thì không được gán tile
                     var button = new Button();
                     button.Template = FindResource("TileButton0") as ControlTemplate;
+                    //Thông báo tọa đọ của button khi được rê chuột
                     button.MouseEnter += Button_MouseEnter;
                     button.MouseLeave += Button_MouseLeave;
+                    button.Click += Button_Click1;
+                    //Gán kích thước
                     button.Width = width;
                     button.Height = height;
-                    button.Content = image;
-                    button.BorderThickness = new Thickness(0);
+                    button.Content = image;//Gán ảnh vào button
+                    button.BorderThickness = new Thickness(0);//Không có viền
                     button.Padding = new Thickness(0.1);
-                    button.Name = "TileMapButton_" + i + "_" + j;
-                    button.Click += Button_Click1;
+                    button.Name = "TileMapButton_" + i + "_" + j;//Đặt tên cho button theo tọa độ tương ứng trong matrix
                     button.Tag = new POSITION(i, j);
+                    //Add btn vào grid
                     Grid.SetRow(button, i);
                     Grid.SetColumn(button, j);
                     GridTileMap.Children.Add(button);
                 }
             }
-
-            #endregion
         }
 
         private void Button_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -127,9 +128,10 @@ namespace MapEditor
         public void SaveTileMap(string pathToTileMapFile, int[,] tileMap, int count)
         {
             string[] lines = new string[tileMap.Length + 1];
-            //Dòng đầu tiên
+            //Lấy kích thước ma trận
             int m = tileMap.GetLength(0);
             int n = tileMap.GetLength(1);
+            //Dòng đầu tiên
             lines[0] = count.ToString() + ' ' + m + ' ' + n;
             //Ma trận
             string tmp;
@@ -142,34 +144,38 @@ namespace MapEditor
                 }
                 lines[i] = tmp;
             }
+            //Ghi vào file
             File.WriteAllLines(pathToTileMapFile,lines);
         }
 
         public List<Image> LoadTileSet(string tileSetPath, int width, int height)
         {
+            //Xóa sạch nội dung trong wrappanel
             WrapPanelTileSet.Children.Clear();
             selectedImage = null;
             ImagePreview.Source = null;
             List<Image> tileSet = new List<Image>();
+            //Load bitmap chứa tileset từ file
             Bitmap inputBitmap = new Bitmap(tileSetPath);
             int bitmapWidth = inputBitmap.Width;
             int bitmapHeight = inputBitmap.Height;
-            //Tiles list
+            //Danh sách các tile
             List<Bitmap> tiles = new List<Bitmap>();
             int m, n;
             if (width <= 0 && height <= 0)
                 return null;
             n = bitmapWidth / width;
             m = bitmapHeight / height;
-            int count = 0;
+            int count = 0;//biến đếm để tạo số thứ tự
             for (int i = 0; i < m; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
+                    //Chi tiết xem comment trong MakeGridMap
                     Bitmap tmp = new Bitmap(width, height);
                     Rectangle r = new Rectangle(j * width, i * height, width, height);
                     tmp = inputBitmap.Clone(r, inputBitmap.PixelFormat);
-                    var image = new System.Windows.Controls.Image();
+                    var image = new Image();
                     image.Source = BitmapToImageSource(tmp);
                     tileSet.Add(image);
                     var button = new Button();
@@ -203,8 +209,9 @@ namespace MapEditor
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Select " + ((Button)sender).Name);
+            //Lưu lại index và imagesource của tile được chọn
             selectedImage = new Image();
-            int id = (int)((Button)sender).Tag - 1;
+            int id = (int)((Button)sender).Tag - 1;//id bắt đầu từ 0
             selectedImage.Source = tileSet[id].Source;
             selectedImageId = id;
             ImagePreview.Source = selectedImage.Source;
@@ -226,6 +233,7 @@ namespace MapEditor
 
 
         }
+        //Chuyển kiểu Bitmap sang kiểu ImageSource
         BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
@@ -248,14 +256,23 @@ namespace MapEditor
             wd.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             if (wd.ShowDialog() == true)
             {
-                //Lưu lại đường dẫn file đang mở;
-                openingFilePath = wd.TileMapFilePath;
                 //Load tileset
                 tileSet = LoadTileSet(wd.TileSetFilePath, wd.CellWidth, wd.CellHeight);
-                //Load tilemap
-                tileMap = LoadTileMap(wd.TileMapFilePath, out int m, out int n);
-                //Đưa lên màn hình
-                MakeGridMap(m, n, wd.CellWidth, wd.CellHeight);
+                try
+                {
+                    //Load tilemap
+                    tileMap = LoadTileMap(wd.TileMapFilePath, out int m, out int n);
+                    //Đưa lên màn hình
+                    MakeGridMap(m, n, wd.CellWidth, wd.CellHeight);
+                    //Lưu lại đường dẫn file đang mở;
+                    openingFilePath = wd.TileMapFilePath;
+                }
+                catch(System.FormatException)
+                {
+                    MessageBox.Show("Invalid file format", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+
             }
         }
         //Fix bug mất một phần cửa sổ khi maximized
@@ -291,9 +308,9 @@ namespace MapEditor
 
         private void MenuItemSave_Click(object sender, RoutedEventArgs e)
         {
-            if (tileMap == null)
+            if (tileMap == null)//Nếu chưa có tilemap thì bỏ qua
                 return;
-            if (openingFilePath == null || openingFilePath == "")//Nếu không biết lưu vào file nào
+            if (openingFilePath == null || openingFilePath == "")//Nếu không biết lưu vào file nào thì yêu cầu người dùng tạo mới
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "Text File|*.txt";
@@ -305,6 +322,7 @@ namespace MapEditor
                 else
                     return;
             }
+            //Tiến hành lưu
             SaveTileMap(openingFilePath, tileMap, tileSet.Count);
             TextStatus.Text = "Saved";
         }
@@ -325,6 +343,7 @@ namespace MapEditor
 
             }
         }
+        //Tạo một ma trận có tất cả phần tử = -1
         private int[,] MakeBlankTileMap(int m, int n)
         {
             int[,] result = new int[m, n];
@@ -367,9 +386,11 @@ namespace MapEditor
             wd.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             if (wd.ShowDialog() == true)
             {
+                //Tạo một tileset
                 tileMap = MakeTileSet(wd.ImageFilePath, wd.TileSetFilePath, wd.CellWidth, wd.CellHeight);
+                //Load tileset lên cửa sổ
                 tileSet = LoadTileSet(wd.TileSetFilePath, wd.CellWidth, wd.CellHeight);
-                //SaveTileMap(wd.TileSetFilePath, tileMap, tileSet.Count);
+                //Load map tilemap lên cửa sổ
                 MakeGridMap(tileMap.GetLength(0), tileMap.GetLength(1), wd.CellWidth, wd.CellHeight);
             }
 
@@ -377,13 +398,12 @@ namespace MapEditor
 
         private int[,] MakeTileSet(string inputImagePath, string outputImagePath, int width, int height)
         {
-            //Read Bitmap
+            //Đọc Bitmap lớn từ file
             Bitmap inputBitmap = new Bitmap(inputImagePath);
             int bitmapWidth = inputBitmap.Width;
             int bitmapHeight = inputBitmap.Height;
-            //Tiles list
+
             List<Bitmap> tiles = new List<Bitmap>();
-            //Crop bitmap
             int m, n;
             n = bitmapWidth / width;
             m = bitmapHeight / height;
@@ -396,22 +416,23 @@ namespace MapEditor
                 {
                     Bitmap tmp = new Bitmap(width, height);
                     Rectangle r = new Rectangle(j * width, i * height, width, height);
-                    tmp = inputBitmap.Clone(r, inputBitmap.PixelFormat);
+                    tmp = inputBitmap.Clone(r, inputBitmap.PixelFormat); //Cắt bitmap
                     available = false;
                     for (int k = 0; k < tiles.Count; k++)
-                        if (CompareBitmapsFast(tiles[k], tmp))
+                        if (CompareBitmapsFast(tiles[k], tmp))//So sách để kiểm tra bitmap có sẵn trong list không
                         {
                             s[i,j] = k;
                             available = true;
                             break;
                         }
-                    if (!available)
+                    if (!available)//Nếu bitmap này không có sẵn trong list thì thêm vào
                     {
                         s[i,j] = last++;
                         tiles.Add(tmp);
                     }
                 }
             }
+            //Vẽ ra bitmap tileset
             Bitmap b = new Bitmap(width * tiles.Count, height);
             for (int i = 0; i < tiles.Count; i++)
             {
@@ -420,6 +441,7 @@ namespace MapEditor
                     g.DrawImage(tiles[i], width * i, 0);
                 }
             }
+            //Xuất ra file
             b.Save(outputImagePath);
             return s;
         }
