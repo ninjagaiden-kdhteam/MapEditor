@@ -267,7 +267,7 @@ namespace MapEditor
                     //Lưu lại đường dẫn file đang mở;
                     openingFilePath = wd.TileMapFilePath;
                 }
-                catch(System.FormatException)
+                catch(Exception)
                 {
                     MessageBox.Show("Invalid file format", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
