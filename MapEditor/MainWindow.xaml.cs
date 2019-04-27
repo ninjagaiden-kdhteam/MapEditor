@@ -416,9 +416,10 @@ namespace MapEditor
             {
                 for (int j = 0; j < n; j++)
                 {
+                    if (i == 3) System.Console.Out.Write(true);
                     Bitmap tmp = new Bitmap(width, height);
                     Rectangle r = new Rectangle(j * width, i * height, width, height);
-                    tmp = inputBitmap.Clone(r, inputBitmap.PixelFormat); //Cắt bitmap
+                    tmp = inputBitmap.Clone(r, PixelFormat.Format32bppArgb); //Cắt bitmap
                     available = false;
                     for (int k = 0; k < tiles.Count; k++)
                         if (CompareBitmapsFast(tiles[k], tmp))//So sách để kiểm tra bitmap có sẵn trong list không
